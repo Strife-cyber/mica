@@ -1,0 +1,1219 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Business Management API",
+    "description": "API for managing users, customers, suppliers, inventory, purchases, sales, and financial data in a business management application. All endpoints are secured with JWT authentication and scoped to the authenticated user's `userId`, except for admin users who have broader access.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "{protocol}://{host}",
+      "description": "Dynamic server URL",
+      "variables": {
+        "protocol": {
+          "default": "http",
+          "enum": ["http", "https"]
+        },
+        "host": {
+          "default": "localhost:3000"
+        }
+      }
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "username": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
+          "role": { "type": "string", "enum": ["admin", "user"] },
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "Customer": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "name": { "type": "string" },
+          "email": { "type": "string", "format": "email", "nullable": true },
+          "phone": { "type": "string", "nullable": true },
+          "address": { "type": "string", "nullable": true },
+          "userId": { "type": "integer" },
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" }
+        },
+        "required": ["name"]
+      },
+      "Supplier": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "name": { "type": "string" },
+          "contact_info": { "type": "string", "nullable": true },
+          "userId": { "type": "integer" },
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" }
+        },
+        "required": ["name"]
+      },
+      "Inventory": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "name": { "type": "string" },
+          "description": { "type": "string", "nullable": true },
+          "quantity_in_stock": { "type": "integer", "nullable": true },
+          "cost_price": { "type": "number", "format": "float", "nullable": true },
+          "selling_price": { "type": "number", "format": "float", "nullable": true },
+          "supplier_id": { "type": "integer", "nullable": true },
+          "userId": { "type": "integer" },
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" }
+        },
+        "required": ["name"]
+      },
+      "Purchase": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "supplier_id": { "type": "integer", "nullable": true },
+          "purchase_date": { "type": "string", "format": "date-time", "nullable": true },
+          "total_amount": { "type": "number", "format": "float", "nullable": true },
+          "userId": { "type": "integer" },
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" }
+        },
+        "required": ["supplier_id"]
+      },
+      "PurchaseItem": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "purchase_id": { "type": "integer" },
+          "inventory_id": { "type": "integer", "nullable": true },
+          "name": { "type": "string", "nullable": true },
+          "quantity": { "type": "integer" },
+          "unit_price": { "type": "number", "format": "float" },
+          "total_price": { "type": "number", "format": "float", "nullable": true },
+          "userId": { "type": "integer" },
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" }
+        },
+        "required": ["purchase_id", "quantity", "unit_price"]
+      },
+      "Sale": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "customer_id": { "type": "integer", "nullable": true },
+          "sale_date": { "type": "string", "format": "date-time", "nullable": true },
+          "total_amount": { "type": "number", "format": "float", "nullable": true },
+          "userId": { "type": "integer" },
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" }
+        },
+        "required": ["customer_id"]
+      },
+      "SaleItem": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "sale_id": { "type": "integer" },
+          "inventory_id": { "type": "integer" },
+          "quantity": { "type": "integer" },
+          "unit_price": { "type": "number", "format": "float" },
+          "total_price": { "type": "number", "format": "float", "nullable": true },
+          "userId": { "type": "integer" },
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" }
+        },
+        "required": ["sale_id", "inventory_id", "quantity", "unit_price"]
+      },
+      "InventoryTransaction": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "inventory_id": { "type": "integer", "nullable": true },
+          "transaction_type": { "type": "string", "enum": ["PURCHASE", "SALE"], "nullable": true },
+          "quantity_change": { "type": "integer", "nullable": true },
+          "date": { "type": "string", "format": "date-time", "nullable": true },
+          "reference_type": { "type": "string", "enum": ["purchase", "sale"], "nullable": true },
+          "reference_id": { "type": "integer", "nullable": true },
+          "userId": { "type": "integer" },
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "FinancialData": {
+        "type": "object",
+        "properties": {
+          "total_revenue": { "type": "number", "format": "float" },
+          "total_costs": { "type": "number", "format": "float" },
+          "gross_profit": { "type": "number", "format": "float" },
+          "profit_margin": { "type": "number", "format": "float" },
+          "inventory_value": { "type": "number", "format": "float" },
+          "total_items_sold": { "type": "integer" },
+          "transaction_volume": {
+            "type": "object",
+            "properties": {
+              "purchases": { "type": "integer" },
+              "sales": { "type": "integer" }
+            }
+          },
+          "top_selling_items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "inventory_id": { "type": "integer" },
+                "name": { "type": "string" },
+                "quantity_sold": { "type": "integer" }
+              }
+            }
+          },
+          "trends": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "period": { "type": "string", "format": "date" },
+                "revenue": { "type": "number", "format": "float" },
+                "costs": { "type": "number", "format": "float" },
+                "profit": { "type": "number", "format": "float" },
+                "transactions": { "type": "integer" },
+                "inventory_change": { "type": "integer" }
+              }
+            }
+          },
+          "graph_data": {
+            "type": "object",
+            "properties": {
+              "revenueVsCosts": {
+                "type": "object",
+                "properties": {
+                  "labels": { "type": "array", "items": { "type": "string" } },
+                  "datasets": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "label": { "type": "string" },
+                        "data": { "type": "array", "items": { "type": "number" } },
+                        "borderColor": { "type": "string" },
+                        "backgroundColor": { "type": "string" }
+                      }
+                    }
+                  }
+                }
+              },
+              "topSellingItems": {
+                "type": "object",
+                "properties": {
+                  "labels": { "type": "array", "items": { "type": "string" } },
+                  "datasets": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "label": { "type": "string" },
+                        "data": { "type": "array", "items": { "type": "number" } },
+                        "backgroundColor": { "type": "array", "items": { "type": "string" } },
+                        "borderColor": { "type": "array", "items": { "type": "string" } },
+                        "borderWidth": { "type": "integer" }
+                      }
+                    }
+                  }
+                }
+              },
+              "transactionTypes": {
+                "type": "object",
+                "properties": {
+                  "labels": { "type": "array", "items": { "type": "string" } },
+                  "datasets": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "label": { "type": "string" },
+                        "data": { "type": "array", "items": { "type": "number" } },
+                        "backgroundColor": { "type": "array", "items": { "type": "string" } },
+                        "borderColor": { "type": "array", "items": { "type": "string" } },
+                        "borderWidth": { "type": "integer" }
+                      }
+                    }
+                  }
+                }
+              },
+              "inventoryTrends": {
+                "type": "object",
+                "properties": {
+                  "labels": { "type": "array", "items": { "type": "string" } },
+                  "datasets": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "label": { "type": "string" },
+                        "data": { "type": "array", "items": { "type": "number" } },
+                        "borderColor": { "type": "string" },
+                        "backgroundColor": { "type": "string" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/register": {
+      "post": {
+        "summary": "Register a new user",
+        "tags": ["Auth"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": { "type": "string" },
+                  "password": { "type": "string" },
+                  "email": { "type": "string", "format": "email" },
+                  "role": { "type": "string", "enum": ["admin", "user"] }
+                },
+                "required": ["username", "password", "email", "role"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User registered successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "user": { "$ref": "#/components/schemas/User" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Invalid input or duplicate email/username" },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "summary": "Login a user",
+        "tags": ["Auth"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "identifier": { "type": "string", "description": "Username or email" },
+                  "password": { "type": "string" }
+                },
+                "required": ["identifier", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "token": { "type": "string" },
+                    "user": { "$ref": "#/components/schemas/User" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Invalid credentials" },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/profile": {
+      "get": {
+        "summary": "Get authenticated user's profile",
+        "tags": ["User"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "User profile retrieved",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/User" }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/status": {
+      "get": {
+        "summary": "Check if user is logged in",
+        "tags": ["User"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "User is logged in",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "isLoggedIn": { "type": "boolean" },
+                    "userId": { "type": "integer" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/customer": {
+      "post": {
+        "summary": "Create a new customer",
+        "tags": ["Customer"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "email": { "type": "string", "format": "email", "nullable": true },
+                  "phone": { "type": "string", "nullable": true },
+                  "address": { "type": "string", "nullable": true }
+                },
+                "required": ["name"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Customer created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "customer": { "$ref": "#/components/schemas/Customer" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Invalid input or duplicate email" },
+          "403": { "description": "Forbidden" },
+          "500": { "description": "Server error" }
+        }
+      },
+      "get": {
+        "summary": "Get all customers",
+        "tags": ["Customer"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by customer name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of customers",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Customer" }
+                }
+              }
+            }
+          },
+          "403": { "description": "Forbidden" },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/customer/{id}": {
+      "get": {
+        "summary": "Get a customer by ID",
+        "tags": ["Customer"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer details",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Customer" }
+              }
+            }
+          },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Customer not found" },
+          "500": { "description": "Server error" }
+        }
+      },
+      "put": {
+        "summary": "Update a customer",
+        "tags": ["Customer"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "email": { "type": "string", "format": "email", "nullable": true },
+                  "phone": { "type": "string", "nullable": true },
+                  "address": { "type": "string", "nullable": true }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Customer updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "customer": { "$ref": "#/components/schemas/Customer" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Invalid input" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Customer not found" },
+          "500": { "description": "Server error" }
+        }
+      },
+      "delete": {
+        "summary": "Delete a customer",
+        "tags": ["Customer"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Customer not found" },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/supplier": {
+      "post": {
+        "summary": "Create a new supplier",
+        "tags": ["Supplier"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "contact_info": { "type": "string", "nullable": true }
+                },
+                "required": ["name"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Supplier created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "supplier": { "$ref": "#/components/schemas/Supplier" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Invalid input" },
+          "403": { "description": "Forbidden" },
+          "500": { "description": "Server error" }
+        }
+      },
+      "get": {
+        "summary": "Get all suppliers",
+        "tags": ["Supplier"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by supplier name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of suppliers",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Supplier" }
+                }
+              }
+            }
+          },
+          "403": { "description": "Forbidden" },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/supplier/{id}": {
+      "get": {
+        "summary": "Get a supplier by ID",
+        "tags": ["Supplier"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Supplier details",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Supplier" }
+              }
+            }
+          },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Supplier not found" },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/inventory": {
+      "post": {
+        "summary": "Create a new inventory item",
+        "tags": ["Inventory"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "description": { "type": "string", "nullable": true },
+                  "quantity_in_stock": { "type": "integer", "nullable": true },
+                  "cost_price": { "type": "number", "format": "float", "nullable": true },
+                  "selling_price": { "type": "number", "format": "float", "nullable": true },
+                  "supplier_id": { "type": "integer", "nullable": true }
+                },
+                "required": ["name"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Inventory item created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "inventory": { "$ref": "#/components/schemas/Inventory" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Invalid input" },
+          "403": { "description": "Forbidden" },
+          "500": { "description": "Server error" }
+        }
+      },
+      "get": {
+        "summary": "Get all inventory items",
+        "tags": ["Inventory"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by inventory item name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of inventory items",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Inventory" }
+                }
+              }
+            }
+          },
+          "403": { "description": "Forbidden" },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/inventory/{id}": {
+      "get": {
+        "summary": "Get an inventory item by ID",
+        "tags": ["Inventory"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Inventory item details",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Inventory" }
+              }
+            }
+          },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Inventory item not found" },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/purchase": {
+      "post": {
+        "summary": "Create a new purchase",
+        "tags": ["Purchase"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "supplier_id": { "type": "integer" },
+                  "purchase_date": { "type": "string", "format": "date-time", "nullable": true },
+                  "total_amount": { "type": "number", "format": "float", "nullable": true }
+                },
+                "required": ["supplier_id"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Purchase created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "purchase": { "$ref": "#/components/schemas/Purchase" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Invalid input" },
+          "403": { "description": "Forbidden" },
+          "500": { "description": "Server error" }
+        }
+      },
+      "get": {
+        "summary": "Get all purchases",
+        "tags": ["Purchase"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "supplier_id",
+            "in": "query",
+            "schema": { "type": "integer" },
+            "description": "Filter by supplier ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of purchases",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Purchase" }
+                }
+              }
+            }
+          },
+          "403": { "description": "Forbidden" },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/purchase/{id}": {
+      "get": {
+        "summary": "Get a purchase by ID",
+        "tags": ["Purchase"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Purchase details",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Purchase" }
+              }
+            }
+          },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Purchase not found" },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/purchase_item": {
+      "post": {
+        "summary": "Create a new purchase item",
+        "tags": ["Purchase Items"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "purchase_id": { "type": "integer" },
+                  "inventory_id": { "type": "integer", "nullable": true },
+                  "name": { "type": "string", "nullable": true },
+                  "quantity": { "type": "integer" },
+                  "unit_price": { "type": "number", "format": "float" }
+                },
+                "required": ["purchase_id", "quantity", "unit_price"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Purchase item created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "purchase_item": { "$ref": "#/components/schemas/PurchaseItem" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Invalid input or invalid purchase/inventory ID" },
+          "403": { "description": "Forbidden" },
+          "500": { "description": "Server error" }
+        }
+      },
+      "get": {
+        "summary": "Get all purchase items",
+        "tags": ["Purchase Items"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "quantity",
+            "in": "query",
+            "schema": { "type": "integer" },
+            "description": "Filter by quantity"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of purchase items",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/PurchaseItem" }
+                }
+              }
+            }
+          },
+          "403": { "description": "Forbidden" },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/sale": {
+      "post": {
+        "summary": "Create a new sale",
+        "tags": ["Sale"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "customer_id": { "type": "integer" },
+                  "sale_date": { "type": "string", "format": "date-time", "nullable": true },
+                  "total_amount": { "type": "number", "format": "float", "nullable": true }
+                },
+                "required": ["customer_id"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Sale created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "sale": { "$ref": "#/components/schemas/Sale" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Invalid input or negative total amount" },
+          "403": { "description": "Forbidden" },
+          "500": { "description": "Server error" }
+        }
+      },
+      "get": {
+        "summary": "Get all sales",
+        "tags": ["Sale"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "List of sales",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Sale" }
+                }
+              }
+            }
+          },
+          "403": { "description": "Forbidden" },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/sale/{id}": {
+      "get": {
+        "summary": "Get a sale by ID",
+        "tags": ["Sale"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sale details",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Sale" }
+              }
+            }
+          },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Sale not found" },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/sale_item": {
+      "post": {
+        "summary": "Create a new sale item",
+        "tags": ["Sale Items"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "sale_id": { "type": "integer" },
+                  "inventory_id": { "type": "integer" },
+                  "quantity": { "type": "integer" },
+                  "unit_price": { "type": "number", "format": "float" }
+                },
+                "required": ["sale_id", "inventory_id", "quantity", "unit_price"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Sale item created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "sale_item": { "$ref": "#/components/schemas/SaleItem" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Invalid input or insufficient stock" },
+          "403": { "description": "Forbidden" },
+          "500": { "description": "Server error" }
+        }
+      },
+      "get": {
+        "summary": "Get all sale items",
+        "tags": ["Sale Items"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "List of sale items",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/SaleItem" }
+                }
+              }
+            }
+          },
+          "403": { "description": "Forbidden" },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/inventory_transaction": {
+      "get": {
+        "summary": "Get all inventory transactions",
+        "tags": ["Inventory Transactions"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "reference_type",
+            "in": "query",
+            "schema": { "type": "string", "enum": ["purchase", "sale"] },
+            "description": "Filter by reference type"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of inventory transactions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/InventoryTransaction" }
+                }
+              }
+            }
+          },
+          "403": { "description": "Forbidden" },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/inventory_transaction/{id}": {
+      "get": {
+        "summary": "Get an inventory transaction by ID",
+        "tags": ["Inventory Transactions"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Inventory transaction details",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/InventoryTransaction" }
+              }
+            }
+          },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Inventory transaction not found" },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/financials": {
+      "get": {
+        "summary": "Get financial data for the user",
+        "tags": ["Financials"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "startDate",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "format": "date-time" },
+            "description": "Start date for the financial data range"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "format": "date-time" },
+            "description": "End date for the financial data range"
+          },
+          {
+            "name": "groupBy",
+            "in": "query",
+            "schema": { "type": "string", "enum": ["daily", "monthly", "yearly"], "default": "monthly" },
+            "description": "Group financial trends by period (defaults to monthly)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Financial data retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "data": { "$ref": "#/components/schemas/FinancialData" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Invalid input or date format" },
+          "403": { "description": "Forbidden" },
+          "500": { "description": "Server error" }
+        }
+      }
+    }
+  }
+}
