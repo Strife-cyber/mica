@@ -25,7 +25,7 @@ function Layout() {
     }
 
     fetchUsername();
-  })
+  }, []);
 
   return (
     <ThemeProvider>
