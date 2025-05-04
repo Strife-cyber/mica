@@ -35,12 +35,13 @@ import { NavItem } from '@/lib/index.js';
 
 interface HeaderProps {
   onNavigate?: (path: string) => void;
+  email?: string;
   userName?: string;
   userImage?: string;
   notificationCount?: number;
 }
 
-const Header = ({ onNavigate, userName = 'John Doe', userImage }: HeaderProps) => {
+const Header = ({ onNavigate, userName = 'John Doe', email = 'admin@example.com', userImage }: HeaderProps) => {
   const router = useNavigate();
   const location = useLocation(); // Get current location
   const currentPath = location.pathname; // Derive currentPath from URL
@@ -53,7 +54,7 @@ const Header = ({ onNavigate, userName = 'John Doe', userImage }: HeaderProps) =
   const navItems: NavItem[] = [
     {
       name: 'Dashboard',
-      href: '#',
+      href: '/dashboard',
       icon: Home,
       active: currentPath === '/dashboard',
     },
@@ -293,7 +294,7 @@ const Header = ({ onNavigate, userName = 'John Doe', userImage }: HeaderProps) =
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col space-y-1">
                     <p className="text-sm font-medium">{userName}</p>
-                    <p className="text-xs text-muted-foreground">admin@example.com</p>
+                    <p className="text-xs text-muted-foreground">{email}</p>
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />

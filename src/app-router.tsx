@@ -10,13 +10,26 @@ import InventoryPage from './pages/entities/inventory-page';
 import { ThemeProvider } from './components/theme-provider';
 import PurchasesPage from './pages/transactions/purchase-page';
 import { BrowserRouter as Router, Routes, Route, Outlet, useNavigate } from 'react-router-dom';
+import useAuthHook from './hooks/auth-hook';
+import { useEffect, useState } from 'react';
+import { User } from './lib';
 
 function Layout() {
   const navigate = useNavigate();
+  const { profile } = useAuthHook();
+  const [user, setUser] = useState<User | null>();
+
+  useEffect(() => {
+    const fetchUsername = async () => {
+      setUser(await profile());
+    }
+
+    fetchUsername();
+  })
 
   return (
     <ThemeProvider>
-      <Header onNavigate={(path) => navigate(path)} />
+      <Header userName={user?.name} email={user?.email} onNavigate={(path) => navigate(path)} />
       <Outlet />
     </ThemeProvider>
   );
