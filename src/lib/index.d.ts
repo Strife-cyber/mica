@@ -57,3 +57,51 @@ export interface InventoryItem {
   updated_at?: Date;
   suppliers?: Supplier[];
 }
+
+export interface Purchase {
+  id: number;  
+  total_amount: number;
+  supplier_id?: number;
+  created_at?: Date;
+  updated_at?: Date;
+  purchase_date?: Date;
+  suppliers?: Supplier[];
+  purchase_items?: PurchaseItem[];
+}
+
+export interface PurchaseItem {
+  id: number;
+  purchase_id: number;
+  inventory_id: number;
+  quantity: number;
+  unit_price: number;
+  total_price: number;
+  created_at?: Date;
+  updated_at?: Date;
+  purchases: Purchase[];
+  inventory: InventoryItem[];
+}
+
+export interface Sale {
+  id: number;
+  customer_id: number;
+  sale_date: Date;
+  total_amount: number;
+  created_at?: Date;
+  updated_at?: Date;
+  customers: Customer[];
+  sales_items: SaleItem[];
+}
+
+export interface SaleItem {
+  id: number;
+  sale_id: number;
+  inventory_id: number;
+  quantity: number;
+  unit_price: number;
+  total_price: number;
+  created_at?: Date;
+  updated_at?: Date;
+  sales: Sale[];
+  inventory: InventoryItem[];
+}

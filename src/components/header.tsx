@@ -1,8 +1,12 @@
 import type React from 'react';
 
-import { useState, useEffect } from 'react';
-import { useTheme } from './theme-provider.tsx';
 import { cn } from '../lib/utils';
+import { Input } from './ui/input';
+import { Button } from './ui/button';
+import { useState, useEffect } from 'react';
+import useAuthHook from '@/hooks/auth-hook.ts';
+import { useNavigate } from 'react-router-dom';
+import { useTheme } from './theme-provider.tsx';
 import {
   ChevronDown,
   Home,
@@ -15,8 +19,6 @@ import {
   X,
   Layers,
 } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { Button } from './ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,9 +27,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
-import { Input } from './ui/input';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 
 type NavItem = {
   name: string;
@@ -50,6 +52,8 @@ export default function Header({
   userName = 'John Doe',
   userImage
 }: HeaderProps) {
+  const router = useNavigate();
+  const { logout } = useAuthHook();
   const { theme, setTheme } = useTheme();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -147,7 +151,9 @@ export default function Header({
                           onClick={() => onNavigate?.(entity.href)}
                         >
                           <entity.icon className="mr-2 h-4 w-4" />
-                          <span>{entity.name}</span>
+                          <a href={`/${entity.name.toLowerCase()}`}>
+                            <span>{entity.name}</span>
+                          </a>
                         </DropdownMenuItem>
                       ))}
                     </DropdownMenuContent>
@@ -230,7 +236,10 @@ export default function Header({
                   <span>Settings</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="text-destructive">
+                <DropdownMenuItem onClick={() => {
+                  logout();
+                  router("/");
+                }} className="text-destructive">
                   <span>Log out</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
