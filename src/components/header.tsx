@@ -53,9 +53,9 @@ const Header = ({ onNavigate, userName = 'John Doe', userImage }: HeaderProps) =
   const navItems: NavItem[] = [
     {
       name: 'Dashboard',
-      href: 'dashboard',
+      href: '#',
       icon: Home,
-      active: currentPath === 'dashboard',
+      active: currentPath === '/dashboard',
     },
     {
       name: 'Entities',
