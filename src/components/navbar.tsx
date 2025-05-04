@@ -17,7 +17,6 @@ export default function Navbar() {
   useEffect(() => {
     async function fetchConnectionStatus() {
       setLoggedIn(await isLoggedIn());
-      console.log(loggedIn);
     }
     fetchConnectionStatus();
   }, [isLoggedIn]);

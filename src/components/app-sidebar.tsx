@@ -21,7 +21,7 @@ export function AppSidebar() {
       title: 'Dashboard',
       href: '/dashboard',
       icon: LayoutGrid,
-    }
+    },
   ];
 
   const footerNavItems: NavItem[] = [];
