@@ -77,78 +77,78 @@ export default function SuppliersPage() {
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       <main className="flex-1 container mx-auto px-4 py-6">
-      <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Suppliers</h1>
+        <div className="space-y-6">
+          <h1 className="text-2xl font-bold">Suppliers</h1>
 
-      {error && (
-        <div className="bg-destructive/10 text-destructive p-3 rounded-md flex justify-between items-center">
-          <p>{error}</p>
-          <Button variant="ghost" size="sm" onClick={resetError}>
-            Dismiss
-          </Button>
+          {error && (
+            <div className="bg-destructive/10 text-destructive p-3 rounded-md flex justify-between items-center">
+              <p>{error}</p>
+              <Button variant="ghost" size="sm" onClick={resetError}>
+                Dismiss
+              </Button>
+            </div>
+          )}
+
+          <DataTable
+            data={suppliers}
+            columns={columns}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            onAdd={handleAddNew}
+            isLoading={loading}
+          />
+
+          <Modal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            title={isEditing ? 'Edit Supplier' : 'Add New Supplier'}
+          >
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSave();
+              }}
+              className="space-y-4"
+            >
+              <div className="space-y-2">
+                <Label htmlFor="name">Name</Label>
+                <Input
+                  id="name"
+                  value={currentSupplier.name || ''}
+                  onChange={(e) => setCurrentSupplier({ ...currentSupplier, name: e.target.value })}
+                  placeholder="Supplier name"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="contact_info">Contact Information</Label>
+                <Input
+                  id="contact_info"
+                  value={currentSupplier.contact_info || ''}
+                  onChange={(e) =>
+                    setCurrentSupplier({ ...currentSupplier, contact_info: e.target.value })
+                  }
+                  placeholder="Email, phone, or address"
+                />
+              </div>
+
+              <div className="flex justify-end gap-2">
+                <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)}>
+                  Cancel
+                </Button>
+                <Button type="submit">Save</Button>
+              </div>
+            </form>
+          </Modal>
+
+          <ConfirmDialog
+            isOpen={isDeleteDialogOpen}
+            onClose={() => setIsDeleteDialogOpen(false)}
+            onConfirm={handleConfirmDelete}
+            title="Delete Supplier"
+            message={`Are you sure you want to delete ${currentSupplier.name}? This action cannot be undone.`}
+          />
         </div>
-      )}
-
-      <DataTable
-        data={suppliers}
-        columns={columns}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-        onAdd={handleAddNew}
-        isLoading={loading}
-      />
-
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title={isEditing ? 'Edit Supplier' : 'Add New Supplier'}
-      >
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSave();
-          }}
-          className="space-y-4"
-        >
-          <div className="space-y-2">
-            <Label htmlFor="name">Name</Label>
-            <Input
-              id="name"
-              value={currentSupplier.name || ''}
-              onChange={(e) => setCurrentSupplier({ ...currentSupplier, name: e.target.value })}
-              placeholder="Supplier name"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="contact_info">Contact Information</Label>
-            <Input
-              id="contact_info"
-              value={currentSupplier.contact_info || ''}
-              onChange={(e) =>
-                setCurrentSupplier({ ...currentSupplier, contact_info: e.target.value })
-              }
-              placeholder="Email, phone, or address"
-            />
-          </div>
-
-          <div className="flex justify-end gap-2">
-            <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)}>
-              Cancel
-            </Button>
-            <Button type="submit">Save</Button>
-          </div>
-        </form>
-      </Modal>
-
-      <ConfirmDialog
-        isOpen={isDeleteDialogOpen}
-        onClose={() => setIsDeleteDialogOpen(false)}
-        onConfirm={handleConfirmDelete}
-        title="Delete Supplier"
-        message={`Are you sure you want to delete ${currentSupplier.name}? This action cannot be undone.`}
-      />
-    </div>
       </main>
     </div>
   );

@@ -80,97 +80,103 @@ export default function CustomersPage() {
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       <main className="flex-1 container mx-auto px-4 py-6">
-      <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Customers</h1>
+        <div className="space-y-6">
+          <h1 className="text-2xl font-bold">Customers</h1>
 
-      {error && (
-        <div className="bg-destructive/10 text-destructive p-3 rounded-md flex justify-between items-center">
-          <p>{error}</p>
-          <Button variant="ghost" size="sm" onClick={resetError}>
-            Dismiss
-          </Button>
+          {error && (
+            <div className="bg-destructive/10 text-destructive p-3 rounded-md flex justify-between items-center">
+              <p>{error}</p>
+              <Button variant="ghost" size="sm" onClick={resetError}>
+                Dismiss
+              </Button>
+            </div>
+          )}
+
+          <DataTable
+            data={customers}
+            columns={columns}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            onAdd={handleAddNew}
+            isLoading={loading}
+          />
+
+          <Modal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            title={isEditing ? 'Edit Customer' : 'Add New Customer'}
+          >
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSave();
+              }}
+              className="space-y-4"
+            >
+              <div className="space-y-2">
+                <Label htmlFor="name">Name</Label>
+                <Input
+                  id="name"
+                  value={currentCustomer.name || ''}
+                  onChange={(e) => setCurrentCustomer({ ...currentCustomer, name: e.target.value })}
+                  placeholder="Customer name"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={currentCustomer.email || ''}
+                  onChange={(e) =>
+                    setCurrentCustomer({ ...currentCustomer, email: e.target.value })
+                  }
+                  placeholder="customer@example.com"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="phone">Phone</Label>
+                <Input
+                  id="phone"
+                  value={currentCustomer.phone || ''}
+                  onChange={(e) =>
+                    setCurrentCustomer({ ...currentCustomer, phone: e.target.value })
+                  }
+                  placeholder="Phone number"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="address">Address</Label>
+                <Input
+                  id="address"
+                  value={currentCustomer.address || ''}
+                  onChange={(e) =>
+                    setCurrentCustomer({ ...currentCustomer, address: e.target.value })
+                  }
+                  placeholder="Customer address"
+                />
+              </div>
+
+              <div className="flex justify-end gap-2">
+                <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)}>
+                  Cancel
+                </Button>
+                <Button type="submit">Save</Button>
+              </div>
+            </form>
+          </Modal>
+
+          <ConfirmDialog
+            isOpen={isDeleteDialogOpen}
+            onClose={() => setIsDeleteDialogOpen(false)}
+            onConfirm={handleConfirmDelete}
+            title="Delete Customer"
+            message={`Are you sure you want to delete ${currentCustomer.name}? This action cannot be undone.`}
+          />
         </div>
-      )}
-
-      <DataTable
-        data={customers}
-        columns={columns}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-        onAdd={handleAddNew}
-        isLoading={loading}
-      />
-
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title={isEditing ? 'Edit Customer' : 'Add New Customer'}
-      >
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSave();
-          }}
-          className="space-y-4"
-        >
-          <div className="space-y-2">
-            <Label htmlFor="name">Name</Label>
-            <Input
-              id="name"
-              value={currentCustomer.name || ''}
-              onChange={(e) => setCurrentCustomer({ ...currentCustomer, name: e.target.value })}
-              placeholder="Customer name"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              value={currentCustomer.email || ''}
-              onChange={(e) => setCurrentCustomer({ ...currentCustomer, email: e.target.value })}
-              placeholder="customer@example.com"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="phone">Phone</Label>
-            <Input
-              id="phone"
-              value={currentCustomer.phone || ''}
-              onChange={(e) => setCurrentCustomer({ ...currentCustomer, phone: e.target.value })}
-              placeholder="Phone number"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="address">Address</Label>
-            <Input
-              id="address"
-              value={currentCustomer.address || ''}
-              onChange={(e) => setCurrentCustomer({ ...currentCustomer, address: e.target.value })}
-              placeholder="Customer address"
-            />
-          </div>
-
-          <div className="flex justify-end gap-2">
-            <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)}>
-              Cancel
-            </Button>
-            <Button type="submit">Save</Button>
-          </div>
-        </form>
-      </Modal>
-
-      <ConfirmDialog
-        isOpen={isDeleteDialogOpen}
-        onClose={() => setIsDeleteDialogOpen(false)}
-        onConfirm={handleConfirmDelete}
-        title="Delete Customer"
-        message={`Are you sure you want to delete ${currentCustomer.name}? This action cannot be undone.`}
-      />
-    </div>
       </main>
     </div>
   );

@@ -21,10 +21,10 @@ export interface NavGroup {
 }
 
 export interface NavItem {
-  title: string;
+  name: string;
   href: string;
-  isActive?: boolean;
-  icon?: LucideIcon | null;
+  icon: React.ElementType;
+  active?: boolean;
 }
 
 export interface Customer {
@@ -59,7 +59,7 @@ export interface InventoryItem {
 }
 
 export interface Purchase {
-  id: number;  
+  id: number;
   total_amount: number;
   supplier_id?: number;
   created_at?: Date;
@@ -103,5 +103,17 @@ export interface SaleItem {
   created_at?: Date;
   updated_at?: Date;
   sales: Sale[];
+  inventory: InventoryItem[];
+}
+
+export interface InventoryTransaction {
+  id: number;
+  inventory_id: number;
+  transaction_type: string; // "SALE" or "PURCHASE"
+  quantity_change: number;
+  date: Date;
+  reference_type: string; // "sale" or "purchase"
+  created_at?: Date;
+  updated_at?: Date;
   inventory: InventoryItem[];
 }

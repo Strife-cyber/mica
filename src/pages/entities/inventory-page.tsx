@@ -91,8 +91,7 @@ export default function InventoryPage() {
     {
       key: 'selling_price',
       label: 'Price',
-      render: (item: InventoryItem) =>
-        item.selling_price ? `$${item.selling_price}` : '-',
+      render: (item: InventoryItem) => (item.selling_price ? `$${item.selling_price}` : '-'),
     },
     {
       key: 'supplier_id',
@@ -113,153 +112,153 @@ export default function InventoryPage() {
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       <main className="flex-1 container mx-auto px-4 py-6">
-      <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Inventory</h1>
+        <div className="space-y-6">
+          <h1 className="text-2xl font-bold">Inventory</h1>
 
-      {error && (
-        <div className="bg-destructive/10 text-destructive p-3 rounded-md flex justify-between items-center">
-          <p>{error}</p>
-          <Button variant="ghost" size="sm" onClick={resetError}>
-            Dismiss
-          </Button>
+          {error && (
+            <div className="bg-destructive/10 text-destructive p-3 rounded-md flex justify-between items-center">
+              <p>{error}</p>
+              <Button variant="ghost" size="sm" onClick={resetError}>
+                Dismiss
+              </Button>
+            </div>
+          )}
+
+          <DataTable
+            data={inventory}
+            columns={columns}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            onAdd={handleAddNew}
+            isLoading={loading}
+          />
+
+          <Modal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            title={isEditing ? 'Edit Inventory Item' : 'Add New Inventory Item'}
+          >
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSave();
+              }}
+              className="space-y-4"
+            >
+              <div className="space-y-2">
+                <Label htmlFor="name">Name</Label>
+                <Input
+                  id="name"
+                  value={currentItem.name || ''}
+                  onChange={(e) => setCurrentItem({ ...currentItem, name: e.target.value })}
+                  placeholder="Item name"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="description">Description</Label>
+                <Textarea
+                  id="description"
+                  value={currentItem.description || ''}
+                  onChange={(e) => setCurrentItem({ ...currentItem, description: e.target.value })}
+                  placeholder="Item description"
+                  rows={3}
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="quantity_in_stock">Quantity in Stock</Label>
+                  <Input
+                    id="quantity_in_stock"
+                    type="number"
+                    value={currentItem.quantity_in_stock?.toString() || '0'}
+                    onChange={(e) =>
+                      setCurrentItem({
+                        ...currentItem,
+                        quantity_in_stock: Number.parseInt(e.target.value) || 0,
+                      })
+                    }
+                    min="0"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="supplier_id">Supplier</Label>
+                  <select
+                    id="supplier_id"
+                    className="w-full rounded-md border border-input bg-background p-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                    value={currentItem.supplier_id?.toString() || ''}
+                    onChange={(e) =>
+                      setCurrentItem({
+                        ...currentItem,
+                        supplier_id: Number.parseInt(e.target.value) || undefined,
+                      })
+                    }
+                  >
+                    <option value="">Select supplier</option>
+                    {suppliers.map((supplier) => (
+                      <option key={supplier.id} value={supplier.id.toString()}>
+                        {supplier.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="cost_price">Cost Price</Label>
+                  <Input
+                    id="cost_price"
+                    type="number"
+                    step="0.01"
+                    value={currentItem.cost_price?.toString() || ''}
+                    onChange={(e) =>
+                      setCurrentItem({
+                        ...currentItem,
+                        cost_price: Number.parseFloat(e.target.value) || undefined,
+                      })
+                    }
+                    placeholder="0.00"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="selling_price">Selling Price</Label>
+                  <Input
+                    id="selling_price"
+                    type="number"
+                    step="0.01"
+                    value={currentItem.selling_price?.toString() || ''}
+                    onChange={(e) =>
+                      setCurrentItem({
+                        ...currentItem,
+                        selling_price: Number.parseFloat(e.target.value) || undefined,
+                      })
+                    }
+                    placeholder="0.00"
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-2">
+                <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)}>
+                  Cancel
+                </Button>
+                <Button type="submit">Save</Button>
+              </div>
+            </form>
+          </Modal>
+
+          <ConfirmDialog
+            isOpen={isDeleteDialogOpen}
+            onClose={() => setIsDeleteDialogOpen(false)}
+            onConfirm={handleConfirmDelete}
+            title="Delete Inventory Item"
+            message={`Are you sure you want to delete ${currentItem.name}? This action cannot be undone.`}
+          />
         </div>
-      )}
-
-      <DataTable
-        data={inventory}
-        columns={columns}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-        onAdd={handleAddNew}
-        isLoading={loading}
-      />
-
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title={isEditing ? 'Edit Inventory Item' : 'Add New Inventory Item'}
-      >
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSave();
-          }}
-          className="space-y-4"
-        >
-          <div className="space-y-2">
-            <Label htmlFor="name">Name</Label>
-            <Input
-              id="name"
-              value={currentItem.name || ''}
-              onChange={(e) => setCurrentItem({ ...currentItem, name: e.target.value })}
-              placeholder="Item name"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
-            <Textarea
-              id="description"
-              value={currentItem.description || ''}
-              onChange={(e) => setCurrentItem({ ...currentItem, description: e.target.value })}
-              placeholder="Item description"
-              rows={3}
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="quantity_in_stock">Quantity in Stock</Label>
-              <Input
-                id="quantity_in_stock"
-                type="number"
-                value={currentItem.quantity_in_stock?.toString() || '0'}
-                onChange={(e) =>
-                  setCurrentItem({
-                    ...currentItem,
-                    quantity_in_stock: Number.parseInt(e.target.value) || 0,
-                  })
-                }
-                min="0"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="supplier_id">Supplier</Label>
-              <select
-                id="supplier_id"
-                className="w-full rounded-md border border-input bg-background p-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-ring"
-                value={currentItem.supplier_id?.toString() || ''}
-                onChange={(e) =>
-                  setCurrentItem({
-                    ...currentItem,
-                    supplier_id: Number.parseInt(e.target.value) || undefined,
-                  })
-                }
-              >
-                <option value="">Select supplier</option>
-                {suppliers.map((supplier) => (
-                  <option key={supplier.id} value={supplier.id.toString()}>
-                    {supplier.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="cost_price">Cost Price</Label>
-              <Input
-                id="cost_price"
-                type="number"
-                step="0.01"
-                value={currentItem.cost_price?.toString() || ''}
-                onChange={(e) =>
-                  setCurrentItem({
-                    ...currentItem,
-                    cost_price: Number.parseFloat(e.target.value) || undefined,
-                  })
-                }
-                placeholder="0.00"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="selling_price">Selling Price</Label>
-              <Input
-                id="selling_price"
-                type="number"
-                step="0.01"
-                value={currentItem.selling_price?.toString() || ''}
-                onChange={(e) =>
-                  setCurrentItem({
-                    ...currentItem,
-                    selling_price: Number.parseFloat(e.target.value) || undefined,
-                  })
-                }
-                placeholder="0.00"
-              />
-            </div>
-          </div>
-
-          <div className="flex justify-end gap-2">
-            <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)}>
-              Cancel
-            </Button>
-            <Button type="submit">Save</Button>
-          </div>
-        </form>
-      </Modal>
-
-      <ConfirmDialog
-        isOpen={isDeleteDialogOpen}
-        onClose={() => setIsDeleteDialogOpen(false)}
-        onConfirm={handleConfirmDelete}
-        title="Delete Inventory Item"
-        message={`Are you sure you want to delete ${currentItem.name}? This action cannot be undone.`}
-      />
-    </div>
       </main>
     </div>
   );
