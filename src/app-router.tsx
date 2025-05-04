@@ -2,6 +2,7 @@ import Landing from './pages/landing';
 import Header from './components/header';
 import LoginPage from './pages/auth/log-in';
 import SignUpPage from './pages/auth/sign-up';
+import FinancialDashboard from './pages/dashboard';
 import SalesPage from './pages/transactions/sales-page';
 import CustomersPage from './pages/entities/customer-page';
 import SuppliersPage from './pages/entities/supplier-page';
@@ -34,6 +35,7 @@ export default function AppRouter() {
           <Route path="/inventory" element={<InventoryPage />} />
           <Route path="/suppliers" element={<SuppliersPage />} />
           <Route path="/purchases" element={<PurchasesPage />} />
+          <Route path="/dashboard" element={<FinancialDashboard />} />
         </Route>
       </Routes>
     </Router>
