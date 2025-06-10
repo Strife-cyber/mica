@@ -28,7 +28,7 @@ export const createInventory = async (req, res) => {
         if (name) {
             const existingItem = await prisma.inventory.findFirst({
                 where: {
-                    name: { equals: name, mode: 'insensitive' },
+                    name: { contains: name },
                     user_id,
                 },
             });
@@ -160,7 +160,7 @@ export const updateInventory = [authorize(['admin', 'user']), async (req, res) =
         if (name) {
             const duplicateItem = await prisma.inventory.findFirst({
                 where: {
-                    name: { equals: name, mode: 'insensitive' },
+                    name: { contains: name },
                     user_id,
                     NOT: { id: inventoryId },
                 },

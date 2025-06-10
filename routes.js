@@ -1,6 +1,8 @@
 import router from "./config/secure-router.js";
 import userRouter from "./routes/user.routes.js";
 import saleRouter from "./routes/sale.routes.js";
+import planRouter from "./routes/plan.routes.js";
+import businessRouter from "./routes/business.routes.js";
 import customerRouter from "./routes/customer.routes.js";
 import supplierRouter from './routes/supplier.routes.js';
 import purchasesRouter from "./routes/purchase.routes.js";
@@ -12,6 +14,8 @@ import inventoryTransactionRouter from "./routes/inventory_transaction.routes.js
 
 router.use('/', userRouter);
 router.use('/sale', saleRouter);
+router.use('/plans', planRouter);
+router.use('/business', businessRouter);
 router.use('/customer', customerRouter);
 router.use('/supplier', supplierRouter);
 router.use('/sale_item', saleItemRouter);

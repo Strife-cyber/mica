@@ -57,7 +57,7 @@ export const createPurchaseItem = async (req, res) => {
             // Create new inventory item if name is provided
             const existingInventory = await prisma.inventory.findFirst({
                 where: {
-                    name: { equals: name, mode: 'insensitive' },
+                    name: { contains: name },
                     user_id,
                 },
             });

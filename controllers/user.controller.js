@@ -27,7 +27,10 @@ export const register = async (req, res) => {
         }
     });
 
-    res.status(201).json({ message: 'User registered successfully' });
+    // Generate JWT token
+    const token = jwt.sign({ id: newUser.id, role: newUser.role }, process.env.JWT_SECRET, { expiresIn: '3h' });
+
+    res.status(201).json({ message: 'User registered successfully', token: token });
 }
 
 
