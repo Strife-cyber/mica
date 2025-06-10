@@ -1,6 +1,6 @@
 import cors from "cors";
 import path from "path";
-import helmet from "helmet";
+import helmet, { crossOriginResourcePolicy } from "helmet";
 import express from "express";
 import { load } from 'js-yaml';
 import readline from "readline";
@@ -30,7 +30,18 @@ app.use(express.urlencoded({ extended: true }))
 
 app.use('/api', router);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-app.use('/uploads', express.static(path.join(process.cwd(), "uploads")));
+
+app.use('/uploads',
+    cors({
+        origin: 'http://localhost:5173',
+        methods: ['GET'],
+        credentials: true
+    }),
+    helmet({
+        crossOriginResourcePolicy: false
+    }),
+    express.static(path.join(process.cwd(), "uploads"))
+);
 
 function listenForQuitCommand() {
     const rl = readline.createInterface({
