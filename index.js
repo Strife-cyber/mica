@@ -1,4 +1,5 @@
 import cors from "cors";
+import path from "path";
 import helmet from "helmet";
 import express from "express";
 import { load } from 'js-yaml';
@@ -29,6 +30,7 @@ app.use(express.urlencoded({ extended: true }))
 
 app.use('/api', router);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use('/uploads', express.static(path.join(process.cwd(), "uploads")));
 
 function listenForQuitCommand() {
     const rl = readline.createInterface({
