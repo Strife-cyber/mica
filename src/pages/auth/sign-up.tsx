@@ -44,7 +44,7 @@ export default function SignUpPage() {
     setIsLoading(false);
 
     if (result === true) {
-      router('/dashboard');
+      router('/business');
     }
   };
 

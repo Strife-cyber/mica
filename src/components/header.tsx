@@ -298,7 +298,9 @@ const Header = ({ onNavigate, userName = 'John Doe', email = 'admin@example.com'
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => router('/profile')}
+                >
                   <Users className="mr-2 h-4 w-4" />
                   <span>Profile</span>
                 </DropdownMenuItem>

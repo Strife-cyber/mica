@@ -117,3 +117,34 @@ export interface InventoryTransaction {
   updated_at?: Date;
   inventory: InventoryItem[];
 }
+
+interface SocialMedia {
+  facebook?: string;
+  twitter?: string;
+  linkedIn?: string;
+  website?: string;
+  instagram?: string;  
+}
+
+export interface Business {
+  id: number;
+  userId: number;
+  name: string;
+  products: string[];
+  location: string;
+  description: string;
+  imagePath: string;
+  image?: File;
+  socialMedia: SocialMedia;
+  hoursPerDay: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Plan {
+  id: number;
+  userId: number;
+  plan: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
