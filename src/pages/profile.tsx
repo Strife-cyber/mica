@@ -19,13 +19,10 @@ import {
   Twitter,
   Linkedin,
   Globe,
-  Phone,
-  Mail,
   Plus,
   Crown,
   Building,
   User,
-  Calendar,
   Star,
 } from "lucide-react";
 import { Business, Plan } from "@/lib"
@@ -36,7 +33,7 @@ import axios from "axios"
 
 export default function ProfilePage() {
     const { getAll: getAllPlans } = usePlanHook();
-    const { getAll: getAlllBusinesses } = useBusinessHook();
+    const { getAll: getAlllBusinesses, update: updateBusiness } = useBusinessHook();
 
     const [businessData, setBusinessData] = useState<Business>(defaultBusiness)
     const [planData, setPlanData] = useState<Plan>(defaultPlan)
@@ -78,11 +75,10 @@ export default function ProfilePage() {
     }
 
     const handleSave = async (section: keyof typeof editMode) => {
-        setIsLoading(true)
-        // Simulate API call - user will handle backend interaction
-        await new Promise((resolve) => setTimeout(resolve, 1000))
-        setEditMode((prev) => ({ ...prev, [section]: false }))
-        setIsLoading(false)
+        setIsLoading(true);
+        updateBusiness(businessData.id, businessData);
+        setEditMode((prev) => ({ ...prev, [section]: false }));
+        setIsLoading(false);
     }
 
     const handleInputChange = (field: string, value: any) => {
@@ -142,7 +138,7 @@ export default function ProfilePage() {
         <div className="max-w-6xl mx-auto space-y-6">
             {/* Header Section */}
             <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">Business Profile</h1>
+            <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">Business Profile</h1>
             <p className="text-lg text-gray-600">Manage your business information and settings</p>
             </div>
 
@@ -228,11 +224,11 @@ export default function ProfilePage() {
                 </div>
             </CardHeader>
             <CardContent className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-6">
+                <div className="grid md:grid-cols-2 gap-6 w-full">
                 <div className="space-y-4">
                     {editMode.basic ? (
                     <>
-                        <div className="space-y-2">
+                        <div className="space-y-2 dark:text-gray-200">
                         <Label>Business Name</Label>
                         <Input value={businessData.name} onChange={(e) => handleInputChange("name", e.target.value)} />
                         </div>
@@ -265,7 +261,7 @@ export default function ProfilePage() {
                     ) : (
                     <>
                         <div>
-                        <h3 className="text-2xl font-bold text-gray-900">{businessData.name}</h3>
+                        <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-200">{businessData.name}</h3>
                         <p className="text-gray-600 flex items-center gap-1 mt-1">
                             <MapPin className="h-4 w-4" />
                             {businessData.location}
@@ -299,10 +295,10 @@ export default function ProfilePage() {
                     <Textarea
                     value={businessData.description}
                     onChange={(e) => handleInputChange("description", e.target.value)}
-                    className="min-h-[100px]"
+                    className="min-h-[100px] dark:text-gray-200 dark:bg-gray-800"
                     />
                 ) : (
-                    <p className="text-gray-700 bg-gray-50 p-4 rounded-lg">{businessData.description}</p>
+                    <p className="text-gray-700 bg-gray-50 dark:text-gray-200 dark:bg-gray-800 p-4 rounded-lg">{businessData.description}</p>
                 )}
                 </div>
             </CardContent>
@@ -367,7 +363,7 @@ export default function ProfilePage() {
             </Card>
 
             {/* Social Media & Contact */}
-            <div className="grid md:grid-cols-2 gap-6">
+            <div>
             <Card>
                 <CardHeader>
                 <div className="flex items-center justify-between">
@@ -376,10 +372,10 @@ export default function ProfilePage() {
                     <CardDescription>Your online presence</CardDescription>
                     </div>
                     <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => (editMode.social ? handleSave("social") : handleEdit("social"))}
-                    disabled={isLoading}
+                        variant="outline"
+                        size="sm"
+                        onClick={() => (editMode.social ? handleSave("social") : handleEdit("social"))}
+                        disabled={isLoading}
                     >
                     {editMode.social ? (
                         <>
@@ -407,7 +403,7 @@ export default function ProfilePage() {
                     const value = businessData.socialMedia[platform.key as keyof typeof businessData.socialMedia]
 
                     return (
-                    <div key={platform.key} className="space-y-2">
+                    <div key={platform.key} className="space-y-2 ">
                         <Label className="flex items-center gap-2">
                         <Icon className="h-4 w-4" />
                         {platform.label}
@@ -419,65 +415,14 @@ export default function ProfilePage() {
                             placeholder={`Your ${platform.label} URL`}
                         />
                         ) : (
-                        <p className="text-sm text-gray-600 bg-gray-50 p-2 rounded">{value || "Not provided"}</p>
+                        <p className="text-sm text-gray-600 bg-gray-50 p-2 rounded dark:text-gray-200 dark:bg-gray-800">{value || "Not provided"}</p>
                         )}
                     </div>
                     )
                 })}
                 </CardContent>
             </Card>
-
-            <Card>
-                <CardHeader>
-                <div>
-                    <CardTitle>Contact Information</CardTitle>
-                    <CardDescription>How customers can reach you</CardDescription>
-                </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                <div className="space-y-4">
-                    <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                    <Mail className="h-5 w-5 text-gray-500" />
-                    <div>
-                        <p className="font-medium">Email</p>
-                        <p className="text-sm text-gray-600"></p>
-                    </div>
-                    </div>
-
-                    <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                    <Phone className="h-5 w-5 text-gray-500" />
-                    <div>
-                        <p className="font-medium">Phone</p>
-                        <p className="text-sm text-gray-600">Not provided</p>
-                    </div>
-                    </div>
-
-                    <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                    <Calendar className="h-5 w-5 text-gray-500" />
-                    <div>
-                        <p className="font-medium">Last Updated</p>
-                        <p className="text-sm text-gray-600">{new Date(businessData.updatedAt).toLocaleDateString()}</p>
-                    </div>
-                    </div>
-                </div>
-                </CardContent>
-            </Card>
             </div>
-
-            {/* Action Buttons */}
-            <Card>
-            <CardContent className="pt-6">
-                <div className="flex gap-4 justify-center">
-                <Button variant="outline" size="lg">
-                    Export Profile
-                </Button>
-                <Button variant="outline" size="lg">
-                    Share Profile
-                </Button>
-                <Button size="lg">View Public Profile</Button>
-                </div>
-            </CardContent>
-            </Card>
         </div>
         </div>
     )
