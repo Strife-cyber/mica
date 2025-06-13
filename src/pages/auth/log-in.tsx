@@ -23,7 +23,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const { login, error, resetError } = useAuthHook();
+  const { login, profile, error, setError, resetError } = useAuthHook();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,6 +35,20 @@ export default function LoginPage() {
     setIsLoading(false);
 
     if (result === true) {
+      const prof = await profile();
+      const TWO_DAYS_IN_MS = 2 * 24 * 60 * 60;
+      const plan = prof?.plan[0];
+      console.log(Date.now() - new Date(plan!.updatedAt).getTime());
+
+      if ((Date.now() - new Date(plan!.updatedAt).getTime() > TWO_DAYS_IN_MS) && (plan!.plan === "free")) {
+        // Two days have passed since the plan was updated
+        setError("You have been on the free plan for far too long now. Please upgrade.")
+        setTimeout(() => router('/business'), 10000);
+
+        return;
+      }
+
+      console.log(prof);
       router('/dashboard');
     }
   };

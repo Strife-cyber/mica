@@ -76,6 +76,7 @@ const useAuthHook = () => {
         name: data.username,
         email: data.email,
         role: data.role,
+        plan: data.plan
       } as User;
     } catch (error) {
       handleError('fetching profile', error);
@@ -102,6 +103,7 @@ const useAuthHook = () => {
     profile,
     loading,
     register,
+    setError,
     isLoggedIn,
     resetError,
   };
