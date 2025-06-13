@@ -66,7 +66,10 @@ export const profile = async (req, res) => {
     const { id } = req.user;
 
     const user = await prisma.users.findUnique({
-        where: { id }
+        where: { id },
+        include: {
+            plan: true
+        }
     });
 
     if (!user) {
@@ -76,7 +79,8 @@ export const profile = async (req, res) => {
     res.status(200).json({
         username: user.username,
         email: user.email,
-        role: user.role
+        role: user.role,
+        plan: user.plan
     })
 }
 
