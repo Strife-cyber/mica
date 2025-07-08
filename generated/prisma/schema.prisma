@@ -1,0 +1,181 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./mica.db"
+}
+
+model customers {
+  id         Int       @id @default(autoincrement())
+  user_id    Int
+  name       String?
+  email      String?
+  phone      String?
+  address    String?
+  created_at DateTime?
+  updated_at DateTime?
+  sales      sales[]
+  user       users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model expenses {
+  id          Int       @id @default(autoincrement())
+  user_id     Int?
+  description String?
+  amount      Decimal?
+  date        DateTime?
+  category    String?
+  created_at  DateTime?
+  updated_at  DateTime?
+  users       users?    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model inventory {
+  id                     Int                      @id @default(autoincrement())
+  user_id                Int
+  name                   String?
+  description            String?
+  quantity_in_stock      Int?
+  cost_price             Decimal?
+  selling_price          Decimal?
+  supplier_id            Int?
+  created_at             DateTime?
+  updated_at             DateTime?
+  suppliers              suppliers?               @relation(fields: [supplier_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  inventory_transactions inventory_transactions[]
+  purchase_items         purchase_items[]
+  sales_items            sales_items[]
+  user                   users                    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model inventory_transactions {
+  id               Int        @id @default(autoincrement())
+  user_id          Int
+  inventory_id     Int?
+  transaction_type String?
+  quantity_change  Int?
+  date             DateTime?
+  reference_type   String?
+  reference_id     Int?
+  created_at       DateTime?
+  updated_at       DateTime?
+  inventory        inventory? @relation(fields: [inventory_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user             users      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model purchase_items {
+  id           Int        @id @default(autoincrement())
+  user_id      Int
+  purchase_id  Int?
+  inventory_id Int?
+  quantity     Int?
+  unit_price   Decimal?
+  total_price  Decimal?
+  created_at   DateTime?
+  updated_at   DateTime?
+  inventory    inventory? @relation(fields: [inventory_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  purchases    purchases? @relation(fields: [purchase_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user         users      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model purchases {
+  id             Int              @id @default(autoincrement())
+  user_id        Int
+  supplier_id    Int?
+  purchase_date  DateTime?
+  total_amount   Decimal?
+  created_at     DateTime?
+  updated_at     DateTime?
+  purchase_items purchase_items[]
+  suppliers      suppliers?       @relation(fields: [supplier_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user           users            @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model sales {
+  id           Int           @id @default(autoincrement())
+  user_id      Int
+  customer_id  Int?
+  sale_date    DateTime?
+  total_amount Decimal?
+  created_at   DateTime?
+  updated_at   DateTime?
+  customers    customers?    @relation(fields: [customer_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sales_items  sales_items[]
+
+  user users @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model sales_items {
+  id           Int        @id @default(autoincrement())
+  user_id      Int
+  sale_id      Int?
+  inventory_id Int?
+  quantity     Int?
+  unit_price   Decimal?
+  total_price  Decimal?
+  created_at   DateTime?
+  updated_at   DateTime?
+  inventory    inventory? @relation(fields: [inventory_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sales        sales?     @relation(fields: [sale_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user         users      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model suppliers {
+  id           Int         @id @default(autoincrement())
+  user_id      Int
+  name         String?
+  contact_info String?
+  created_at   DateTime?
+  updated_at   DateTime?
+  inventory    inventory[]
+  purchases    purchases[]
+  user         users       @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model business {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  name        String
+  products    Json
+  location    String
+  description String
+  imagePath   String? // Optional field for business image
+  socialMedia Json // Note: SQLite emulates JSON
+  hoursPerDay Float
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        users    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model plans {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  plan      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      users    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model users {
+  id                     Int                      @id @default(autoincrement())
+  username               String?                  @unique
+  password               String?
+  role                   String?
+  email                  String?                  @unique
+  created_at             DateTime?
+  updated_at             DateTime?
+  expenses               expenses[]
+  customers              customers[]
+  suppliers              suppliers[]
+  inventory              inventory[]
+  purchases              purchases[]
+  purchase_items         purchase_items[]
+  inventory_transactions inventory_transactions[]
+  sales                  sales[]
+  sales_items            sales_items[]
+  business               business[]
+  plan                   plans[]
+}

@@ -1,5 +1,6 @@
 import cors from "cors";
 import path from "path";
+import dotenv from "dotenv";
 import helmet, { crossOriginResourcePolicy } from "helmet";
 import express from "express";
 import { load } from 'js-yaml';
@@ -9,6 +10,8 @@ import { readFileSync } from "fs";
 import bodyParser from "body-parser";
 import swaggerUi from "swagger-ui-express";
 import expressListEndpoints from "express-list-endpoints";
+
+dotenv.config();
 
 const app = express();
 const PORT = parseInt(process.env.PORT) || 3000;
