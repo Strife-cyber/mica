@@ -275,12 +275,12 @@ export default function FinancialDashboard() {
 
   // Format currency
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("en-US", {
+    return new Intl.NumberFormat("fr-CM", {
       style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 2,
-    }).format(value)
-  }
+      currency: "XAF",
+      minimumFractionDigits: 0, // CFA typically doesn't use decimals
+    }).format(value);
+  };
 
   // Calculate percentage change (for demo purposes)
   const getPercentageChange = (_value: number) => {
@@ -394,10 +394,10 @@ export default function FinancialDashboard() {
                 {isRefreshing ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
               </Button>
 
-              <Button variant="outline">
+              {/*<Button variant="outline">
                 <Download className="mr-2 h-4 w-4" />
                 Export
-              </Button>
+              </Button>*/}
             </div>
           </div>
 

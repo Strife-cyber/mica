@@ -452,7 +452,7 @@ export default function BusinessProfileSetup() {
                 >
                   <div className="text-center">
                     <h3 className="text-xl font-bold mb-2">Free</h3>
-                    <div className="text-3xl font-bold text-green-600 mb-4">$0</div>
+                    <div className="text-3xl font-bold text-green-600 mb-4">0 francs</div>
                     <ul className="text-sm space-y-2 text-left">
                       <li>✓ Basic profile setup</li>
                       <li>✓ Up to 5 products</li>
@@ -476,7 +476,7 @@ export default function BusinessProfileSetup() {
                   </div>
                   <div className="text-center">
                     <h3 className="text-xl font-bold mb-2">Premium</h3>
-                    <div className="text-3xl font-bold text-blue-600 mb-4">$29</div>
+                    <div className="text-3xl font-bold text-blue-600 mb-4">2900 francs</div>
                     <ul className="text-sm space-y-2 text-left">
                       <li>✓ Everything in Free</li>
                       <li>✓ Unlimited products</li>
@@ -498,7 +498,7 @@ export default function BusinessProfileSetup() {
                 >
                   <div className="text-center">
                     <h3 className="text-xl font-bold mb-2">Company</h3>
-                    <div className="text-3xl font-bold text-purple-600 mb-4">$99</div>
+                    <div className="text-3xl font-bold text-purple-600 mb-4">9900 francs</div>
                     <ul className="text-sm space-y-2 text-left">
                       <li>✓ Everything in Premium</li>
                       <li>✓ Multi-location support</li>
@@ -572,7 +572,7 @@ export default function BusinessProfileSetup() {
                     >
                       {paymentProcessing
                         ? "Processing Payment..."
-                        : `Process Payment ($${formData.selectedPlan === "premium" ? "29" : "99"})`}
+                        : `Process Payment (${formData.selectedPlan === "premium" ? "2900" : "9900"}) francs`}
                     </Button>
                   )}
                 </div>

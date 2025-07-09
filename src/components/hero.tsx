@@ -39,9 +39,9 @@ export default function Hero() {
                 <ArrowRight className="ml-2 h-4 w-4" />
               </div>
             </AnimatedButton>
-            <AnimatedButton size="lg" variant="outline" className="w-full">
+            {/*<AnimatedButton size="lg" variant="outline" className="w-full">
               Book a Demo
-            </AnimatedButton>
+            </AnimatedButton>*/}
           </div>
         </FadeIn>
 

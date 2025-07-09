@@ -45,7 +45,7 @@ export default function Pricing() {
                 <CardDescription>Perfect for small businesses just getting started</CardDescription>
                 <div className="mt-4">
                   <span className="text-3xl font-bold">
-                    $<CountUp end={29} duration={1.5} />
+                    <CountUp end={29} duration={1.5} /> francs
                   </span>
                   <span className="text-muted-foreground">/month</span>
                 </div>
@@ -86,7 +86,7 @@ export default function Pricing() {
                 <CardDescription>Ideal for growing businesses with more needs</CardDescription>
                 <div className="mt-4">
                   <span className="text-3xl font-bold">
-                    $<CountUp end={79} duration={1.5} />
+                    <CountUp end={79} duration={1.5} /> francs
                   </span>
                   <span className="text-muted-foreground">/month</span>
                 </div>
@@ -130,7 +130,7 @@ export default function Pricing() {
                 </CardDescription>
                 <div className="mt-4">
                   <span className="text-3xl font-bold">
-                    $<CountUp end={199} duration={1.5} />
+                    <CountUp end={199} duration={1.5} /> francs
                   </span>
                   <span className="text-muted-foreground">/month</span>
                 </div>

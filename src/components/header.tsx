@@ -304,10 +304,10 @@ const Header = ({ onNavigate, userName = 'John Doe', email = 'admin@example.com'
                   <Users className="mr-2 h-4 w-4" />
                   <span>Profile</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                {/*<DropdownMenuItem>
                   <Settings className="mr-2 h-4 w-4" />
                   <span>Settings</span>
-                </DropdownMenuItem>
+                </DropdownMenuItem>*/}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   className="text-destructive"

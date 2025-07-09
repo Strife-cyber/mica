@@ -451,7 +451,7 @@ export default function SalesPage() {
                   <Label>Available Products</Label>
                   {availableInventory.map((item) => (
                     <SelectItem key={item.id} value={item.id.toString()}>
-                      {item.name} (${item.selling_price}) - {item.quantity_in_stock} in stock
+                      {item.name} ({item.selling_price} francs) - {item.quantity_in_stock} in stock
                     </SelectItem>
                   ))}
                 </SelectGroup>
@@ -492,7 +492,7 @@ export default function SalesPage() {
         {selectedInventoryItem && (
           <div className="text-sm">
             <p>
-              <span className="font-medium">Price:</span> ${selectedInventoryItem.selling_price}
+              <span className="font-medium">Price:</span> {selectedInventoryItem.selling_price} francs
             </p>
             {selectedInventoryItem.description && (
               <p>
@@ -542,7 +542,7 @@ export default function SalesPage() {
                   )}
                 </div>
               </TableCell>
-              <TableCell className="text-right">${item.unit_price}</TableCell>
+              <TableCell className="text-right">{item.unit_price} francs</TableCell>
               <TableCell className="text-right">
                 {item.quantity}
                 {item.quantity > item.in_stock / 2 && (
@@ -551,7 +551,7 @@ export default function SalesPage() {
                   </Badge>
                 )}
               </TableCell>
-              <TableCell className="text-right font-medium">${item.total_price}</TableCell>
+              <TableCell className="text-right font-medium">{item.total_price} francs</TableCell>
               <TableCell>
                 <Button variant="ghost" size="icon" onClick={() => removeItemFromSale(index)}>
                   <Trash2 className="h-4 w-4" />
@@ -690,7 +690,7 @@ export default function SalesPage() {
                       </div>
                       <div className="text-right">
                         <div className="text-sm text-muted-foreground">Total</div>
-                        <div className="font-medium text-lg">${sale.total_amount}</div>
+                        <div className="font-medium text-lg">{sale.total_amount} francs</div>
                       </div>
                     </div>
                   </CardContent>
@@ -836,7 +836,7 @@ export default function SalesPage() {
             <CardFooter className="flex flex-col space-y-4">
               <div className="w-full flex justify-between text-lg font-medium">
                 <span>Total Amount:</span>
-                <span>${totalAmount}</span>
+                <span>{totalAmount} francs</span>
               </div>
 
               {saleItems.length > 0 && (
@@ -897,7 +897,7 @@ export default function SalesPage() {
                 <Separator />
                 <div className="flex justify-between font-medium">
                   <span>Total:</span>
-                  <span>${totalAmount}</span>
+                  <span>{totalAmount} francs</span>
                 </div>
               </div>
 
@@ -982,7 +982,7 @@ export default function SalesPage() {
 
             <div className="space-y-1">
               <h4 className="text-sm font-medium">Sale Information</h4>
-              <p>Total: ${selectedSale.total_amount}</p>
+              <p>Total: {selectedSale.total_amount} francs</p>
               <p className="text-sm text-muted-foreground">Items: {saleDetailsItems.length}</p>
               <p className="text-sm text-muted-foreground">
                 Quantity: {saleDetailsItems.reduce((sum, item) => sum + item.quantity, 0)}
@@ -1024,9 +1024,9 @@ export default function SalesPage() {
                         <TableCell>
                           {inventoryItem?.name || `Product #${item.inventory_id}`}
                         </TableCell>
-                        <TableCell className="text-right">${item.unit_price}</TableCell>
+                        <TableCell className="text-right">{item.unit_price} francs</TableCell>
                         <TableCell className="text-right">{item.quantity}</TableCell>
-                        <TableCell className="text-right">${item.total_price}</TableCell>
+                        <TableCell className="text-right">{item.total_price} francs</TableCell>
                       </TableRow>
                     );
                   })}

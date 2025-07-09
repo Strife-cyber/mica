@@ -495,7 +495,7 @@ export default function PurchasesPage() {
           </div>
 
           <div>
-            <Label htmlFor="unitPrice">Unit Price ($)</Label>
+            <Label htmlFor="unitPrice">Unit Price (francs)</Label>
             <Input
               id="unitPrice"
               type="number"
@@ -517,8 +517,8 @@ export default function PurchasesPage() {
         {selectedInventoryItem && (
           <div className="text-sm">
             <p>
-              <span className="font-medium">Current Cost Price:</span> $
-              {selectedInventoryItem.cost_price || 'Not set'}
+              <span className="font-medium">Current Cost Price:</span>
+              {selectedInventoryItem.cost_price || 'Not set'} francs
             </p>
             <p>
               <span className="font-medium">Current Stock:</span>{' '}
@@ -572,10 +572,10 @@ export default function PurchasesPage() {
                   )}
                 </div>
               </TableCell>
-              <TableCell className="text-right">${item.unit_price}</TableCell>
+              <TableCell className="text-right">{item.unit_price} francs</TableCell>
               <TableCell className="text-right">{item.quantity}</TableCell>
               <TableCell className="text-right font-medium">
-                ${item.total_price}
+                {item.total_price} francs
               </TableCell>
               <TableCell>
                 <Button variant="ghost" size="icon" onClick={() => removeItemFromPurchase(index)}>
@@ -723,7 +723,7 @@ export default function PurchasesPage() {
                       <div className="text-right">
                         <div className="text-sm text-muted-foreground">Total</div>
                         <div className="font-medium text-lg">
-                          ${purchase.total_amount}
+                          {purchase.total_amount} francs
                         </div>
                       </div>
                     </div>
@@ -867,7 +867,7 @@ export default function PurchasesPage() {
             <CardFooter className="flex flex-col space-y-4">
               <div className="w-full flex justify-between text-lg font-medium">
                 <span>Total Amount:</span>
-                <span>${totalAmount}</span>
+                <span>{totalAmount} francs</span>
               </div>
 
               {purchaseItems.length > 0 && (
@@ -928,7 +928,7 @@ export default function PurchasesPage() {
                 <Separator />
                 <div className="flex justify-between font-medium">
                   <span>Total:</span>
-                  <span>${totalAmount}</span>
+                  <span>{totalAmount} francs</span>
                 </div>
               </div>
 
@@ -1027,7 +1027,7 @@ export default function PurchasesPage() {
 
             <div className="space-y-1">
               <h4 className="text-sm font-medium">Purchase Information</h4>
-              <p>Total: ${selectedPurchase.total_amount}</p>
+              <p>Total: {selectedPurchase.total_amount} francs</p>
               <p className="text-sm text-muted-foreground">Items: {purchaseDetailsItems.length}</p>
               <p className="text-sm text-muted-foreground">
                 Quantity: {purchaseDetailsItems.reduce((sum, item) => sum + item.quantity, 0)}
@@ -1069,9 +1069,9 @@ export default function PurchasesPage() {
                         <TableCell>
                           {inventoryItem?.name || `Product #${item.inventory_id}`}
                         </TableCell>
-                        <TableCell className="text-right">${item.unit_price}</TableCell>
+                        <TableCell className="text-right">{item.unit_price} francs</TableCell>
                         <TableCell className="text-right">{item.quantity}</TableCell>
-                        <TableCell className="text-right">${item.total_price}</TableCell>
+                        <TableCell className="text-right">{item.total_price} francs</TableCell>
                       </TableRow>
                     );
                   })}

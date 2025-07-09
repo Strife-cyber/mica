@@ -91,7 +91,7 @@ export default function InventoryPage() {
     {
       key: 'selling_price',
       label: 'Price',
-      render: (item: InventoryItem) => (item.selling_price ? `$${item.selling_price}` : '-'),
+      render: (item: InventoryItem) => (item.selling_price ? `${item.selling_price} francs` : '-'),
     },
     {
       key: 'supplier_id',
@@ -186,6 +186,7 @@ export default function InventoryPage() {
                 <div className="space-y-2">
                   <Label htmlFor="supplier_id">Supplier</Label>
                   <select
+                    title='supplier_id'
                     id="supplier_id"
                     className="w-full rounded-md border border-input bg-background p-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-ring"
                     value={currentItem.supplier_id?.toString() || ''}
