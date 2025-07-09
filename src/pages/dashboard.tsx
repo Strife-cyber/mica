@@ -47,6 +47,7 @@ import {
 import { Line, Bar, Doughnut } from "react-chartjs-2"
 import { Label } from "@/components/ui/label"
 import useFinanceHook from "@/hooks/finance-hook"
+import useAuthHook from "@/hooks/auth-hook"
 
 // Register ChartJS components
 ChartJS.register(
@@ -143,6 +144,7 @@ export default function FinancialDashboard() {
   const [activeTab, setActiveTab] = useState<string>("overview")
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false)
 
+  // const { profile } = useAuthHook();
   const { getFinanceData } = useFinanceHook();
 
   // Chart options
@@ -214,141 +216,6 @@ export default function FinancialDashboard() {
 
       if (result.data) {
         setFinancialData(result.data)
-      } else {
-        // For demo purposes, use sample data if API call fails
-        setFinancialData({
-          total_revenue: 15750.25,
-          total_costs: 8920.75,
-          gross_profit: 6829.5,
-          profit_margin: 43.36,
-          inventory_value: 12995,
-          total_items_sold: 342,
-          transaction_volume: {
-            purchases: 28,
-            sales: 75,
-          },
-          top_selling_items: [
-            { inventory_id: 1, name: "Laptop", quantity_sold: 42 },
-            { inventory_id: 2, name: "Smartphone", quantity_sold: 38 },
-            { inventory_id: 3, name: "Headphones", quantity_sold: 27 },
-            { inventory_id: 4, name: "Monitor", quantity_sold: 21 },
-            { inventory_id: 5, name: "Keyboard", quantity_sold: 18 },
-          ],
-          trends: [
-            {
-              period: "2023-01-01",
-              revenue: 2500,
-              costs: 1200,
-              profit: 1300,
-              transactions: 15,
-              inventory_change: -10,
-            },
-            {
-              period: "2023-02-01",
-              revenue: 3200,
-              costs: 1800,
-              profit: 1400,
-              transactions: 22,
-              inventory_change: -15,
-            },
-            {
-              period: "2023-03-01",
-              revenue: 2800,
-              costs: 1500,
-              profit: 1300,
-              transactions: 18,
-              inventory_change: 5,
-            },
-            {
-              period: "2023-04-01",
-              revenue: 3500,
-              costs: 2100,
-              profit: 1400,
-              transactions: 25,
-              inventory_change: -8,
-            },
-            {
-              period: "2023-05-01",
-              revenue: 3750,
-              costs: 2320,
-              profit: 1430,
-              transactions: 28,
-              inventory_change: 12,
-            },
-          ],
-          graph_data: {
-            revenueVsCosts: {
-              labels: ["Jan", "Feb", "Mar", "Apr", "May"],
-              datasets: [
-                {
-                  label: "Revenue",
-                  data: [2500, 3200, 2800, 3500, 3750],
-                  borderColor: "rgba(75, 192, 192, 1)",
-                  backgroundColor: "rgba(75, 192, 192, 0.2)",
-                },
-                {
-                  label: "Costs",
-                  data: [1200, 1800, 1500, 2100, 2320],
-                  borderColor: "rgba(255, 99, 132, 1)",
-                  backgroundColor: "rgba(255, 99, 132, 0.2)",
-                },
-                {
-                  label: "Profit",
-                  data: [1300, 1400, 1300, 1400, 1430],
-                  borderColor: "rgba(54, 162, 235, 1)",
-                  backgroundColor: "rgba(54, 162, 235, 0.2)",
-                },
-              ],
-            },
-            topSellingItems: {
-              labels: ["Laptop", "Smartphone", "Headphones", "Monitor", "Keyboard"],
-              datasets: [
-                {
-                  label: "Quantity Sold",
-                  data: [42, 38, 27, 21, 18],
-                  backgroundColor: [
-                    "rgba(255, 99, 132, 0.2)",
-                    "rgba(54, 162, 235, 0.2)",
-                    "rgba(255, 206, 86, 0.2)",
-                    "rgba(75, 192, 192, 0.2)",
-                    "rgba(153, 102, 255, 0.2)",
-                  ],
-                  borderColor: [
-                    "rgba(255, 99, 132, 1)",
-                    "rgba(54, 162, 235, 1)",
-                    "rgba(255, 206, 86, 1)",
-                    "rgba(75, 192, 192, 1)",
-                    "rgba(153, 102, 255, 1)",
-                  ],
-                  borderWidth: 1,
-                },
-              ],
-            },
-            transactionTypes: {
-              labels: ["Purchases", "Sales"],
-              datasets: [
-                {
-                  label: "Transaction Types",
-                  data: [28, 75],
-                  backgroundColor: ["rgba(255, 99, 132, 0.2)", "rgba(54, 162, 235, 0.2)"],
-                  borderColor: ["rgba(255, 99, 132, 1)", "rgba(54, 162, 235, 1)"],
-                  borderWidth: 1,
-                },
-              ],
-            },
-            inventoryTrends: {
-              labels: ["Jan", "Feb", "Mar", "Apr", "May"],
-              datasets: [
-                {
-                  label: "Inventory Change",
-                  data: [-10, -15, 5, -8, 12],
-                  borderColor: "rgba(153, 102, 255, 1)",
-                  backgroundColor: "rgba(153, 102, 255, 0.2)",
-                },
-              ],
-            },
-          },
-        })
       }
     } catch (error) {
       console.error("Error fetching financial data:", error)

@@ -1,3 +1,6 @@
+import AccessDenied from "@/components/access-denied";
+import { MinimalAccessDenied, AccountSuspended, PendingApproval } from "@/components/access-denied-variants";
+
 export interface Metadata {
   title?: string;
   name?: string;
@@ -128,6 +131,15 @@ interface SocialMedia {
   instagram?: string;
   linkedin?: string;
 }
+
+export const AccessDeniedVariants = {
+  MAIN: { key: "main", label: "Main Access Denied", component: AccessDenied },
+  MINIMAL: { key: "minimal", label: "Minimal Access Denied", component: MinimalAccessDenied },
+  PENDING_APPROVAL: { key: "pending-approval", label: "Pending Approval", component: PendingApproval },
+  ACCOUNT_SUSPENDED: { key: "account-suspended", label: "Account Suspended", component: AccountSuspended },
+} as const;
+
+export type VariantKey = keyof typeof AccessDeniedVariants;
 
 export interface Business {
   id: number;
