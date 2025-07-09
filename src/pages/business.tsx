@@ -225,6 +225,7 @@ export default function BusinessProfileSetup() {
                       />
                       <button
                         type="button"
+                        title="button"
                         onClick={clearImage}
                         className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1"
                       >
@@ -330,7 +331,7 @@ export default function BusinessProfileSetup() {
                   {formData.products.map((product, index) => (
                     <Badge key={index} variant="secondary" className="text-sm">
                       {product}
-                      <button type="button" onClick={() => removeProduct(product)} className="ml-2 hover:text-red-500">
+                      <button title="button" type="button" onClick={() => removeProduct(product)} className="ml-2 hover:text-red-500">
                         <X className="h-3 w-3" />
                       </button>
                     </Badge>

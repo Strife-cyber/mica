@@ -15,6 +15,7 @@ import InventoryPage from './pages/entities/inventory-page';
 import { ThemeProvider } from './components/theme-provider';
 import PurchasesPage from './pages/transactions/purchase-page';
 import { BrowserRouter as Router, Routes, Route, Outlet, useNavigate } from 'react-router-dom';
+import BusinessSelector from './pages/join/business_selector';
 
 function Layout() {
   const navigate = useNavigate();
@@ -45,6 +46,7 @@ export default function AppRouter() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<SignUpPage />} />
         <Route path="/business" element={<BusinessProfileSetup/>}/>
+        <Route path="/business/join" element={<BusinessSelector/>} />
         <Route element={<Layout />}>
           <Route path="/sales" element={<SalesPage />} />
           <Route path="/profile" element={<ProfilePage/>} />

@@ -29,6 +29,7 @@ export default function SignUpPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isPartOfBusiness, setIsPartOfBusiness] = useState(false);
 
   const { register, error, resetError } = useAuthHook();
 
@@ -43,8 +44,14 @@ export default function SignUpPage() {
 
     setIsLoading(false);
 
+    if (result === true && isPartOfBusiness) {
+      router('/business/join');
+      return;
+    }
+
     if (result === true) {
       router('/business');
+      return;
     }
   };
 
@@ -179,6 +186,12 @@ export default function SignUpPage() {
                       </ul>
                     </div>
                   )}
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox id='business' checked={isPartOfBusiness} onCheckedChange={() => setIsPartOfBusiness((prev) => (!prev)) }/>
+                  <Label htmlFor='business' className='text-sm font-normal'>
+                    Are you already part of a business affiliated with Mica?
+                  </Label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Checkbox id="terms" required />

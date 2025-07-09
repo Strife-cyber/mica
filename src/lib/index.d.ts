@@ -9,6 +9,7 @@ export interface User {
   email: string;
   role: string;
   plan: Plan[];
+  username: string;
 }
 
 export interface BreadcrumbItem {
@@ -124,22 +125,24 @@ interface SocialMedia {
   twitter?: string;
   linkedIn?: string;
   website?: string;
-  instagram?: string;  
+  instagram?: string;
+  linkedin?: string;
 }
 
 export interface Business {
   id: number;
-  userId: number;
-  name: string;
-  products: string[];
-  location: string;
-  description: string;
-  imagePath: string;
+  user: User;
   image?: File;
-  socialMedia: SocialMedia;
-  hoursPerDay: number;
+  name: string;
+  userId: number;
   createdAt: Date;
   updatedAt: Date;
+  location: string;
+  imagePath: string;
+  products: string[];
+  description: string;
+  hoursPerDay: number;
+  socialMedia: SocialMedia;
 }
 
 export interface Plan {
@@ -148,4 +151,11 @@ export interface Plan {
   plan: string;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface Employee {
+  id: number;
+  userId: number;
+  businessId: number;
+  permissions: string;
 }

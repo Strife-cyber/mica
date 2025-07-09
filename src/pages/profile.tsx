@@ -544,7 +544,7 @@ export default function ProfilePage() {
                                 <Badge key={index} variant="secondary" className="text-sm px-3 py-1">
                                     {product}
                                     {editMode.products && (
-                                        <button type="button" onClick={() => removeProduct(product)} className="ml-2 hover:text-red-500">
+                                        <button title="button" type="button" onClick={() => removeProduct(product)} className="ml-2 hover:text-red-500">
                                             <X className="h-3 w-3" />
                                         </button>
                                     )}
