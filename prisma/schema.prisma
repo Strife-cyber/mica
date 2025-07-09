@@ -148,6 +148,7 @@ model business {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   user        users     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  employee    employees[]
 }
 
 model plans {
@@ -159,6 +160,14 @@ model plans {
   user       users     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
+model employees {
+  id                  Int       @id @default(autoincrement())
+  userId              Int
+  businessId          Int
+  user                users     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  business            business  @relation(fields: [businessId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  permissions         String?
+}
 
 model users {
   id                     Int                      @id @default(autoincrement())
@@ -179,4 +188,5 @@ model users {
   sales_items            sales_items[]
   business               business[]
   plan                   plans[]
+  employee               employees[]
 }

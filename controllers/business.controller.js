@@ -104,7 +104,7 @@ export async function getAllBusinesses(req, res) {
     const isAdmin = req.user.role === "admin";
 
     // Validate date parameters if provided
-    let where = isAdmin ? {} : { userId };
+    let where = {}; // isAdmin ? {} : { userId };
     if (startDate && endDate) {
       const start = new Date(startDate);
       const end = new Date(endDate);

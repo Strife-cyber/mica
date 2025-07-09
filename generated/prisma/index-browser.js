@@ -240,6 +240,13 @@ exports.Prisma.PlansScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.EmployeesScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  businessId: 'businessId',
+  permissions: 'permissions'
+};
+
 exports.Prisma.UsersScalarFieldEnum = {
   id: 'id',
   username: 'username',
@@ -288,6 +295,7 @@ exports.Prisma.ModelName = {
   suppliers: 'suppliers',
   business: 'business',
   plans: 'plans',
+  employees: 'employees',
   users: 'users'
 };
 

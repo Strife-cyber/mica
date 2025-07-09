@@ -136,7 +136,7 @@ model suppliers {
 }
 
 model business {
-  id          Int      @id @default(autoincrement())
+  id          Int         @id @default(autoincrement())
   userId      Int
   name        String
   products    Json
@@ -145,9 +145,10 @@ model business {
   imagePath   String? // Optional field for business image
   socialMedia Json // Note: SQLite emulates JSON
   hoursPerDay Float
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  user        users    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  user        users       @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  employee    employees[]
 }
 
 model plans {
@@ -157,6 +158,15 @@ model plans {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   user      users    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model employees {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  businessId  Int
+  user        users    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  business    business @relation(fields: [businessId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  permissions String?
 }
 
 model users {
@@ -178,4 +188,5 @@ model users {
   sales_items            sales_items[]
   business               business[]
   plan                   plans[]
+  employee               employees[]
 }

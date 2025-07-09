@@ -68,7 +68,9 @@ export const profile = async (req, res) => {
     const user = await prisma.users.findUnique({
         where: { id },
         include: {
-            plan: true
+            plan: true,
+            business: true,
+            employee: true
         }
     });
 
@@ -80,7 +82,9 @@ export const profile = async (req, res) => {
         username: user.username,
         email: user.email,
         role: user.role,
-        plan: user.plan
+        plan: user.plan,
+        employee: user.role === 'employee' ? user.employee : [],
+        business: user.role === 'employee' ? user.business : []
     })
 }
 
